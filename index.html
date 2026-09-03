@@ -18,19 +18,31 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DvgCart | Haute Couture & Luxury Retail</title>
-  <meta name="description" content="Discover curated high-end timepieces, fine leather accessories, and luxury fragrances. Experience personalized shopping with premium WhatsApp checkout.">
+  <meta name="description" content="Discover curated high-end apparel, fine leather goods, and luxury fragrances. Experience frictionless personal shopping with instant WhatsApp checkout.">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="icon" id="tab-favicon" href="logo.png" type="image/png">
+  <link rel="icon" id="tab-favicon" href="images/bag.png" type="image/png">
 </head>
 <body>
 
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- TOP LUXURY ANNOUNCEMENT BANNER -->
+  <div class="announcement-banner">
+    <div class="announcement-content">
+      <span class="announcement-sparkle">✦</span>
+      <span>COMPLIMENTARY INSURED EXPRESS SHIPPING ON ORDERS OVER ₹15,000</span>
+      <span class="announcement-divider">•</span>
+      <span>USE CODE <strong class="gold-text">VIP10</strong> FOR 10% OFF</span>
+      <span class="announcement-sparkle">✦</span>
+    </div>
+  </div>
 
   <!-- NAVIGATION HEADER -->
   <header id="main-header">
     <div class="header-container">
       <!-- Logo Container -->
       <a href="index.html" class="logo" id="store-logo-link">
-        <!-- The logo.png will be dynamically injected here if loaded, otherwise falls back to luxury text logo -->
         <div class="logo-text" id="logo-display-container">
           <div class="logo-icon-fallback">D</div> DVG<span>CART</span>
         </div>
@@ -45,12 +57,22 @@
 
       <!-- Action Items -->
       <div class="nav-actions">
+        <!-- Quick Search Toggle in Header -->
+        <a href="#catalog" class="header-action-btn" id="header-search-btn" aria-label="Search Collection">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </a>
+
+        <!-- Cart Button -->
         <button class="cart-icon-btn" id="cart-trigger" aria-label="Open Shopping Cart">
-          <svg viewBox="0 0 24 24">
+          <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0" />
           </svg>
           <span class="cart-badge" id="cart-count">0</span>
         </button>
+
         <!-- Mobile Menu Toggle -->
         <button class="mobile-menu-btn" id="mobile-menu-trigger" aria-label="Open Navigation Menu">
           <svg viewBox="0 0 24 24" width="24" height="24">
@@ -66,14 +88,36 @@
     <div class="hero-overlay"></div>
     <div class="hero-container">
       <div class="hero-content">
-        <span class="hero-tag">Limited Edition Release</span>
-        <h1 class="hero-title serif">The Art of <br><span class="gold-text">Premium Apparel</span></h1>
-        <p class="hero-desc">Elevate your daily aesthetic. Explore our meticulously tailored organic cotton tees, high-fidelity audio equipment, and custom designer accents.</p>
+        <div class="hero-badge-pill">
+          <span class="pulse-dot"></span>
+          <span>Curated Haute Couture • Edition 2026</span>
+        </div>
+        <h1 class="hero-title serif">The Art of <br><span class="gold-text">Modern Luxury</span></h1>
+        <p class="hero-desc">Elevate your daily signature. Discover hand-tailored Pima cotton essentials, Tuscan leather masterpieces, and rare artisanal fragrances with frictionless 1-click WhatsApp concierge checkout.</p>
+        
         <div class="hero-actions">
           <a href="#catalog" class="btn-luxury">Explore Collection</a>
-          <button class="btn-luxury-outline" id="hero-quickview-btn">View Masterwork</button>
+          <button class="btn-luxury-outline" id="hero-quickview-btn">View Masterpiece</button>
+        </div>
+
+        <div class="hero-stats-row">
+          <div class="hero-stat-item">
+            <span class="hero-stat-value gold-text">★ 4.95</span>
+            <span class="hero-stat-label">Client Satisfaction</span>
+          </div>
+          <div class="hero-stat-divider"></div>
+          <div class="hero-stat-item">
+            <span class="hero-stat-value">100%</span>
+            <span class="hero-stat-label">Certified Authentic</span>
+          </div>
+          <div class="hero-stat-divider"></div>
+          <div class="hero-stat-item">
+            <span class="hero-stat-value gold-text">Instant</span>
+            <span class="hero-stat-label">WhatsApp Ordering</span>
+          </div>
         </div>
       </div>
+
       <div class="hero-image-wrapper">
         <div class="hero-image-frame">
           <img src="images/tshirt.png" alt="Signature Pima Tee" class="hero-img" id="hero-featured-image">
@@ -81,6 +125,65 @@
             <div class="hero-price-title">Signature Pima Tee</div>
             <div class="hero-price-amount">₹9,999</div>
           </div>
+          <div class="hero-floating-badge">
+            <span class="gold-text">✦</span> Limited Edition Release
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUE PROPOSITION & TRUST BADGES BAR -->
+  <section class="trust-bar-section">
+    <div class="trust-bar-container">
+      <div class="trust-card">
+        <div class="trust-icon-box">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="3" width="15" height="13"></rect>
+            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+            <circle cx="5.5" cy="18.5" r="2.5"></circle>
+            <circle cx="18.5" cy="18.5" r="2.5"></circle>
+          </svg>
+        </div>
+        <div class="trust-info">
+          <h4>Complimentary Courier</h4>
+          <p>Free insured delivery on orders over ₹15,000</p>
+        </div>
+      </div>
+
+      <div class="trust-card">
+        <div class="trust-icon-box">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+        </div>
+        <div class="trust-info">
+          <h4>Certified Authentic</h4>
+          <p>Hand-crafted with verified provenance</p>
+        </div>
+      </div>
+
+      <div class="trust-card">
+        <div class="trust-icon-box">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+          </svg>
+        </div>
+        <div class="trust-info">
+          <h4>Instant WhatsApp Order</h4>
+          <p>Direct 1-click personal concierge checkout</p>
+        </div>
+      </div>
+
+      <div class="trust-card">
+        <div class="trust-icon-box">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+        </div>
+        <div class="trust-info">
+          <h4>Bespoke VIP Care</h4>
+          <p>24/7 dedicated private client assistance</p>
         </div>
       </div>
     </div>
@@ -91,20 +194,42 @@
     <div class="section-header">
       <span class="section-subtitle">Exquisite Selection</span>
       <h2 class="section-title serif">Curated Catalog</h2>
+      <p class="section-tagline">Each artifact is crafted in limited numbers, guaranteeing exceptional rarity and individuality.</p>
     </div>
 
-    <!-- Search Bar -->
-    <div class="catalog-search-wrapper" style="max-width: 400px; margin: 0 auto 30px; position: relative; padding: 0 15px;">
-      <input type="text" id="catalog-search" class="form-control" placeholder="Search creations..." style="padding-left: 45px; border-radius: 0; background-color: var(--color-secondary); border-color: var(--color-border-dark); text-align: center; font-size: 13px; height: 45px; letter-spacing: 0.5px;">
-      <span style="position: absolute; left: 30px; top: 50%; transform: translateY(-50%); color: var(--color-text-muted); display: flex; align-items: center;">
-        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-      </span>
+    <!-- Catalog Controls: Search, Filters & Sorting -->
+    <div class="catalog-controls-container">
+      <!-- Search Input -->
+      <div class="catalog-search-wrapper">
+        <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="catalog-search" class="form-control search-input" placeholder="Search creations, materials, notes...">
+        <button id="clear-search-btn" class="clear-search-btn" aria-label="Clear Search" style="display: none;">&times;</button>
+      </div>
+
+      <!-- Sorting Dropdown -->
+      <div class="catalog-sort-wrapper">
+        <label for="catalog-sort" class="sort-label">Sort By:</label>
+        <select id="catalog-sort" class="catalog-sort-select">
+          <option value="featured">Featured Masterpieces</option>
+          <option value="price-low">Price: Low to High</option>
+          <option value="price-high">Price: High to Low</option>
+          <option value="rating">Client Rating</option>
+        </select>
+      </div>
     </div>
 
     <!-- Category Filters -->
     <div class="catalog-filters" id="category-filters">
       <button class="filter-btn active" data-category="all">All Creations</button>
       <!-- Categories will be dynamically generated here -->
+    </div>
+
+    <!-- Results Count Indicator -->
+    <div class="catalog-meta-row">
+      <span id="catalog-results-count" class="catalog-results-count">Displaying items</span>
     </div>
 
     <!-- Products Grid -->
@@ -221,22 +346,64 @@
   <div class="drawer-overlay" id="cart-overlay"></div>
   <div class="drawer" id="cart-drawer">
     <div class="drawer-header">
-      <h3 class="drawer-title">Shopping Cart</h3>
+      <div class="drawer-header-title-box">
+        <h3 class="drawer-title">Shopping Bag</h3>
+        <span class="drawer-count-badge" id="cart-drawer-count">0 items</span>
+      </div>
       <button class="drawer-close" id="cart-close" aria-label="Close Cart">&times;</button>
     </div>
-    <div class="drawer-content" id="cart-items-container">
-      <!-- Cart items will be dynamically rendered here -->
+
+    <!-- Free Shipping Progress Meter -->
+    <div class="free-shipping-container">
+      <div class="free-shipping-text-row">
+        <span id="free-shipping-text">Add ₹15,000 more for Free Express Delivery</span>
+        <span class="free-shipping-icon">🚚</span>
+      </div>
+      <div class="free-shipping-bar-bg">
+        <div class="free-shipping-bar-fill" id="free-shipping-bar-fill" style="width: 0%;"></div>
+      </div>
     </div>
+
+    <!-- Cart Items Content -->
+    <div class="drawer-content" id="cart-items-container">
+      <!-- Cart items rendered dynamically -->
+    </div>
+
+    <!-- Promo Code Section -->
+    <div class="cart-promo-box">
+      <div class="promo-input-group">
+        <input type="text" id="promo-input" class="promo-input" placeholder="Promo code (e.g. VIP10)">
+        <button id="apply-promo-btn" class="promo-apply-btn">Apply</button>
+      </div>
+      <div id="promo-status-msg" class="promo-status-msg" style="display: none;"></div>
+    </div>
+
+    <!-- Cart Summary Footer -->
     <div class="drawer-footer">
       <div class="cart-summary-row">
-        <span class="cart-summary-label">Items Count:</span>
+        <span class="cart-summary-label">Items:</span>
         <span id="cart-summary-qty">0</span>
+      </div>
+      <div class="cart-summary-row" id="cart-discount-row" style="display: none;">
+        <span class="cart-summary-label gold-text">VIP Discount (10%):</span>
+        <span class="gold-text" id="cart-summary-discount">-₹0</span>
+      </div>
+      <div class="cart-summary-row">
+        <span class="cart-summary-label">Express Courier:</span>
+        <span id="cart-summary-shipping" class="gold-text">Complimentary</span>
       </div>
       <div class="cart-summary-row total">
         <span class="cart-summary-total-label">Subtotal:</span>
-        <span class="cart-summary-total-value" id="cart-summary-total">$0.00</span>
+        <span class="cart-summary-total-value" id="cart-summary-total">₹0</span>
       </div>
-      <button class="btn-luxury" style="width: 100%;" id="checkout-trigger">Proceed to Checkout</button>
+      <button class="btn-luxury checkout-cta-btn" id="checkout-trigger">
+        <span>Proceed to WhatsApp Checkout</span>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+      <div class="cart-security-badge">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        <span>End-to-End Direct Concierge Transmission</span>
+      </div>
     </div>
   </div>
 
@@ -245,40 +412,140 @@
     <div class="modal-container">
       <button class="modal-close-btn" id="quick-view-close" aria-label="Close Modal">&times;</button>
       <div class="product-detail-modal-layout" id="quick-view-content">
-        <!-- Detailed content will be injected dynamically -->
+        <!-- Detailed content dynamically injected -->
       </div>
     </div>
   </div>
 
-  <!-- MODAL: WHATSAPP CHECKOUT FORM -->
+  <!-- MODAL: CONCIERGE WHATSAPP CHECKOUT FORM -->
   <div class="modal" id="checkout-modal">
     <div class="modal-container checkout-modal-container">
       <button class="modal-close-btn" id="checkout-close" aria-label="Close Modal">&times;</button>
-      <h3 class="checkout-title serif">Concierge Checkout</h3>
-      <p class="checkout-subtitle">Submit your shipping details to generate a customized order summary to be transmitted directly to our private boutique client service via WhatsApp.</p>
       
+      <div class="checkout-modal-header">
+        <span class="hero-tag" style="margin-bottom: 6px;">VIP Concierge Service</span>
+        <h3 class="checkout-title serif">Personal Boutique Checkout</h3>
+        <p class="checkout-subtitle">Your selections are formatted into a private bespoke order note transmitted directly to our concierge via WhatsApp for instant priority handling.</p>
+      </div>
+
+      <!-- Live Order Items Preview in Checkout -->
+      <div class="checkout-order-preview-box" id="checkout-order-preview">
+        <!-- Dynamic order preview injected here -->
+      </div>
+
       <form id="checkout-form">
-        <div class="form-group">
-          <label class="form-label" for="cust-name">Full Name</label>
-          <input type="text" id="cust-name" class="form-control" placeholder="e.g. Lady Isabella Montgomery" required>
+        <div class="form-row-2col">
+          <div class="form-group">
+            <label class="form-label" for="cust-name">Full Name *</label>
+            <input type="text" id="cust-name" class="form-control" placeholder="e.g. Alex Montgomery" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cust-phone">WhatsApp Number *</label>
+            <input type="tel" id="cust-phone" class="form-control" placeholder="e.g. +91 98765 43210" required>
+          </div>
         </div>
+
         <div class="form-group">
-          <label class="form-label" for="cust-phone">WhatsApp Contact Number</label>
-          <input type="tel" id="cust-phone" class="form-control" placeholder="e.g. +1 (555) 019-2834" required>
+          <label class="form-label" for="cust-address">Delivery Address *</label>
+          <textarea id="cust-address" class="form-control" rows="2" placeholder="Suite / Residence, Street, Area" required></textarea>
         </div>
-        <div class="form-group">
-          <label class="form-label" for="cust-address">Delivery Address</label>
-          <textarea id="cust-address" class="form-control" placeholder="e.g. Apartment 4B, 742 Park Avenue, New York, NY 10021" required></textarea>
+
+        <div class="form-row-2col">
+          <div class="form-group">
+            <label class="form-label" for="cust-city">City & State *</label>
+            <input type="text" id="cust-city" class="form-control" placeholder="e.g. Mumbai, Maharashtra" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cust-pincode">Postal PIN Code *</label>
+            <input type="text" id="cust-pincode" class="form-control" placeholder="e.g. 400001" required>
+          </div>
         </div>
+
+        <!-- Payment Method Preference -->
         <div class="form-group">
-          <label class="form-label" for="cust-notes">Special Shipping Instructions / Notes</label>
-          <textarea id="cust-notes" class="form-control" placeholder="e.g. Please wrap in custom DvgCart gold leaf paper and leave with the concierge."></textarea>
+          <label class="form-label">Payment Preference *</label>
+          <div class="payment-options-grid">
+            <label class="payment-option-tile">
+              <input type="radio" name="payment-method" value="UPI (GPay / PhonePe / Paytm)" checked>
+              <div class="payment-tile-content">
+                <span class="payment-icon">⚡</span>
+                <span class="payment-text">UPI / QR Code</span>
+              </div>
+            </label>
+            <label class="payment-option-tile">
+              <input type="radio" name="payment-method" value="Cash on Delivery (COD)">
+              <div class="payment-tile-content">
+                <span class="payment-icon">💵</span>
+                <span class="payment-text">Cash on Delivery</span>
+              </div>
+            </label>
+            <label class="payment-option-tile">
+              <input type="radio" name="payment-method" value="Bank Wire / Card Link">
+              <div class="payment-tile-content">
+                <span class="payment-icon">💳</span>
+                <span class="payment-text">Bank Wire / Card</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="cust-notes">Special Instructions or Gift Wrapping Notes (Optional)</label>
+          <textarea id="cust-notes" class="form-control" rows="2" placeholder="e.g. Include bespoke signature gift box & gold ribbon"></textarea>
+        </div>
+
+        <!-- Remember details for faster reordering -->
+        <div class="form-checkbox-row">
+          <input type="checkbox" id="save-cust-details" checked>
+          <label for="save-cust-details">Remember my shipping details for instant future orders</label>
         </div>
         
-        <button type="submit" class="btn-luxury" style="width: 100%; margin-top: 20px;">Transmit Order to Concierge</button>
+        <button type="submit" class="btn-luxury checkout-submit-btn" id="checkout-submit-btn">
+          <span>Transmit Order to WhatsApp Concierge</span>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+
+        <button type="button" class="btn-copy-order" id="copy-order-btn">
+          <span>📋 Copy Order Summary</span>
+        </button>
       </form>
     </div>
   </div>
+
+  <!-- FLOATING WHATSAPP VIP CONCIERGE BUTTON -->
+  <a href="https://wa.me/919483635095?text=Hello%20DvgCart%20Concierge%2C%20I%20would%20like%20assistance%20with%20your%20collection." target="_blank" class="floating-wa-btn" id="floating-wa-btn" aria-label="Chat with VIP Concierge on WhatsApp">
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor">
+      <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.41a8.19 8.19 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.64c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.02-1.25-.75-.67-1.26-1.5-1.41-1.75-.15-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.78 2.72 4.31 3.81.6.26 1.07.42 1.44.53.61.2 1.16.17 1.6.1.49-.07 1.47-.6 1.68-1.18.21-.59.21-1.09.15-1.18-.06-.09-.23-.15-.48-.28z"/>
+    </svg>
+    <span class="floating-wa-label">Concierge</span>
+  </a>
+
+  <!-- MOBILE STICKY BOTTOM NAVIGATION BAR -->
+  <nav class="mobile-bottom-bar" id="mobile-bottom-bar">
+    <a href="#hero" class="mobile-bar-tab active" id="mob-tab-home">
+      <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+      <span>Home</span>
+    </a>
+    <a href="#catalog" class="mobile-bar-tab" id="mob-tab-catalog">
+      <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+      <span>Catalog</span>
+    </a>
+    <button class="mobile-bar-tab" id="mob-tab-search">
+      <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <span>Search</span>
+    </button>
+    <button class="mobile-bar-tab" id="mob-tab-cart">
+      <div class="mobile-bar-cart-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0" /></svg>
+        <span class="mobile-bar-cart-badge" id="mobile-cart-count">0</span>
+      </div>
+      <span>Bag</span>
+    </button>
+    <a href="https://wa.me/919483635095" target="_blank" class="mobile-bar-tab gold" id="mob-tab-wa">
+      <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+      <span>Order</span>
+    </a>
+  </nav>
 
   <!-- JAVASCRIPT SCRIPTS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

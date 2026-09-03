@@ -10,48 +10,101 @@ const DEFAULT_PRODUCTS = [
   {
     id: "prod-001",
     title: "Signature Pima Tee",
-    category: "T-Shirt",
+    category: "Apparel",
     price: 9999,
-    description: "A premium heavyweight t-shirt crafted from hand-harvested Peruvian Pima cotton. Designed with a structured, luxury drape and double-needle stitching for lasting shape.",
+    rating: 4.9,
+    reviewsCount: 128,
+    badge: "Bestseller",
+    stockLeft: 6,
+    description: "A mastercrafted heavyweight t-shirt tailored from hand-harvested Peruvian Pima cotton. Features an architectural drape, reinforced collar binding, and silk-screened minimalist branding.",
     image: "images/tshirt.png",
     images: ["images/tshirt.png"],
     featured: true,
+    sizes: ["S", "M", "L", "XL"],
     specs: [
-      "Material: 100% Organic Pima Cotton",
-      "Fabric Weight: 280 GSM Heavyweight",
-      "Origin: Ethical tailoring in Lima, Peru",
-      "Fit: Relaxed modern drape"
+      "Material: 100% Long-Staple Peruvian Pima Cotton",
+      "Fabric Weight: 280 GSM Heavyweight Jersey",
+      "Origin: Hand-tailored in Lima, Peru",
+      "Fit: Contemporary relaxed architectural drape",
+      "Care: Cold gentle wash, flat dry"
     ]
   },
   {
     id: "prod-002",
-    title: "Elite Wireless Headphones",
-    category: "Electronics",
-    price: 34999,
-    description: "Professional noise-cancelling headphones featuring acoustic-grade titanium drivers and premium calfskin memory foam ear cups. Experience sound in its purest, unfiltered form.",
-    image: "images/headphones.png",
-    images: ["images/headphones.png"],
+    title: "Voyager Leather Duffle",
+    category: "Leather Goods",
+    price: 28999,
+    rating: 5.0,
+    reviewsCount: 84,
+    badge: "Masterpiece",
+    stockLeft: 3,
+    description: "Hand-stitched full-grain Italian Tuscan leather duffle designed for discerning jet-setters. Accented with brushed 24k gold-plated hardware and water-resistant suede interior lining.",
+    image: "images/bag.png",
+    images: ["images/bag.png"],
     featured: true,
     specs: [
-      "Drivers: 40mm Electro-dynamic Titanium",
-      "Connectivity: Bluetooth 5.2 & Ultra-low latency mode",
-      "Battery Life: 40 hours of continuous playback",
-      "Active Noise Cancellation: Premium hybrid ANC"
+      "Material: Full-Grain Vegetable-Tanned Italian Leather",
+      "Hardware: Solid brass plated in 24k champagne gold",
+      "Compartments: Padded 16\" laptop sleeve & shoe vault",
+      "Dimensions: 52cm x 28cm x 26cm (Cabin Approved)",
+      "Warranty: Lifetime artisanal guarantee"
+    ]
+  },
+  {
+    id: "prod-003",
+    title: "Oud Royal Extrait de Parfum",
+    category: "Fragrances",
+    price: 18499,
+    rating: 4.95,
+    reviewsCount: 210,
+    badge: "Exclusive",
+    stockLeft: 8,
+    description: "An intoxicating blend of 30-year aged Cambodian agarwood, Damascus rose petals, smoked ambergris, and Sicilian bergamot. Hand-poured in a faceted crystal flacon.",
+    image: "images/perfume.png",
+    images: ["images/perfume.png"],
+    featured: true,
+    specs: [
+      "Concentration: 35% Pure Extrait de Parfum Oil",
+      "Top Notes: Calabrian Bergamot, Pink Peppercorn",
+      "Heart Notes: Taif Rose, Rare Saffron, Jasmine Sambac",
+      "Base Notes: Cambodian Oud, Ambergris, Bourbon Vanilla",
+      "Longevity: 18+ Hours intense sillage"
+    ]
+  },
+  {
+    id: "prod-004",
+    title: "Monaco Aviator Eyewear",
+    category: "Accessories",
+    price: 14999,
+    rating: 4.85,
+    reviewsCount: 96,
+    badge: "Limited Edition",
+    stockLeft: 5,
+    description: "Aerospace-grade Japanese beta-titanium aviators fitted with anti-reflective polarized Zeiss lenses. Featherlight 18-gram silhouette engineered for total glare elimination.",
+    image: "images/sunglasses.png",
+    images: ["images/sunglasses.png"],
+    featured: true,
+    specs: [
+      "Frame: Ultra-lightweight Japanese Beta-Titanium",
+      "Lenses: Carl Zeiss 100% UVA/UVB Category 3 Polarized",
+      "Nose Pads: Hypoallergenic ceramic and silicone composite",
+      "Weight: 18 grams featherweight profile",
+      "Case: Handcrafted magnetic leather vault included"
     ]
   }
 ];
 
-const DEFAULT_CATEGORIES = ["T-Shirt", "Electronics"];
+const DEFAULT_CATEGORIES = ["Apparel", "Leather Goods", "Fragrances", "Accessories"];
 
 /**
  * Initialize catalog in LocalStorage if it doesn't exist.
  */
 function initializeCatalog() {
-  if (!localStorage.getItem("dvgcart_products_v4")) {
-    localStorage.setItem("dvgcart_products_v4", JSON.stringify(DEFAULT_PRODUCTS));
+  if (!localStorage.getItem("dvgcart_products_v5")) {
+    localStorage.setItem("dvgcart_products_v5", JSON.stringify(DEFAULT_PRODUCTS));
   }
-  if (!localStorage.getItem("dvgcart_categories_v4")) {
-    localStorage.setItem("dvgcart_categories_v4", JSON.stringify(DEFAULT_CATEGORIES));
+  if (!localStorage.getItem("dvgcart_categories_v5")) {
+    localStorage.setItem("dvgcart_categories_v5", JSON.stringify(DEFAULT_CATEGORIES));
   }
 }
 
@@ -62,13 +115,13 @@ function getProducts() {
   initializeCatalog();
   let prods = [];
   try {
-    prods = JSON.parse(localStorage.getItem("dvgcart_products_v4")) || [];
+    prods = JSON.parse(localStorage.getItem("dvgcart_products_v5")) || [];
   } catch (e) {
     prods = [];
   }
   if (!Array.isArray(prods) || prods.length === 0) {
     prods = DEFAULT_PRODUCTS;
-    localStorage.setItem("dvgcart_products_v4", JSON.stringify(DEFAULT_PRODUCTS));
+    localStorage.setItem("dvgcart_products_v5", JSON.stringify(DEFAULT_PRODUCTS));
   }
   // Ensure images array exists on each product
   return prods.map(p => {
@@ -83,7 +136,7 @@ function getProducts() {
  * Save products list to LocalStorage
  */
 function saveProducts(products) {
-  localStorage.setItem("dvgcart_products_v4", JSON.stringify(products));
+  localStorage.setItem("dvgcart_products_v5", JSON.stringify(products));
 }
 
 /**
@@ -93,13 +146,13 @@ function getCategories() {
   initializeCatalog();
   let cats = [];
   try {
-    cats = JSON.parse(localStorage.getItem("dvgcart_categories_v4")) || [];
+    cats = JSON.parse(localStorage.getItem("dvgcart_categories_v5")) || [];
   } catch (e) {
     cats = [];
   }
   if (!Array.isArray(cats) || cats.length === 0) {
     cats = DEFAULT_CATEGORIES;
-    localStorage.setItem("dvgcart_categories_v4", JSON.stringify(DEFAULT_CATEGORIES));
+    localStorage.setItem("dvgcart_categories_v5", JSON.stringify(DEFAULT_CATEGORIES));
   }
   return cats;
 }
@@ -108,7 +161,7 @@ function getCategories() {
  * Save categories to LocalStorage
  */
 function saveCategories(categories) {
-  localStorage.setItem("dvgcart_categories_v4", JSON.stringify(categories));
+  localStorage.setItem("dvgcart_categories_v5", JSON.stringify(categories));
 }
 
 /**
@@ -234,8 +287,8 @@ async function fetchCloudCatalog() {
 
     // Update Local Cache with exact database records
     if (normalizedProdData && normalizedProdData.length > 0) {
-      localStorage.setItem("dvgcart_products_v4", JSON.stringify(normalizedProdData));
-      localStorage.setItem("dvgcart_categories_v4", JSON.stringify(categoriesList));
+      localStorage.setItem("dvgcart_products_v5", JSON.stringify(normalizedProdData));
+      localStorage.setItem("dvgcart_categories_v5", JSON.stringify(categoriesList));
     }
 
     return {
