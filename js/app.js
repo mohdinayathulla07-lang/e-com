@@ -609,9 +609,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Promo Code Engine (Configured dynamically by Admin)
+  const clearPromoBtn = document.getElementById("clear-promo-btn");
   if (applyPromoBtn && promoInput) {
     const defaultPromoCode = (localStorage.getItem("dvgcart_promo_code") || "VIP10").toUpperCase().trim();
     promoInput.placeholder = `Promo code (e.g. ${defaultPromoCode})`;
+
+    promoInput.addEventListener("input", () => {
+      if (clearPromoBtn) {
+        clearPromoBtn.style.display = (promoInput.value.trim().length > 0 || appliedPromo) ? "inline-flex" : "none";
+      }
+    });
 
     applyPromoBtn.addEventListener("click", () => {
       const code = promoInput.value.trim().toUpperCase();
@@ -627,6 +634,7 @@ document.addEventListener("DOMContentLoaded", () => {
           promoStatusMsg.textContent = `✓ ${adminDiscountPercent}% discount applied (${adminPromoCode})!`;
           promoStatusMsg.style.display = "block";
         }
+        if (clearPromoBtn) clearPromoBtn.style.display = "inline-flex";
         showToast(`${adminPromoCode} voucher activated: ${adminDiscountPercent}% off entire order.`);
       } else {
         appliedPromo = null;
@@ -635,9 +643,24 @@ document.addEventListener("DOMContentLoaded", () => {
           promoStatusMsg.textContent = `Invalid voucher code. Try '${adminPromoCode}'.`;
           promoStatusMsg.style.display = "block";
         }
+        if (clearPromoBtn) clearPromoBtn.style.display = "inline-flex";
       }
       updateCartUI();
     });
+
+    if (clearPromoBtn) {
+      clearPromoBtn.addEventListener("click", () => {
+        promoInput.value = "";
+        appliedPromo = null;
+        if (promoStatusMsg) {
+          promoStatusMsg.style.display = "none";
+          promoStatusMsg.textContent = "";
+        }
+        clearPromoBtn.style.display = "none";
+        updateCartUI();
+        showToast("Promo code cleared.");
+      });
+    }
   }
 
   // Drawer Toggles
@@ -731,10 +754,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const heroDesc = localStorage.getItem("dvgcart_hero_desc");
     const heroImg = localStorage.getItem("dvgcart_hero_image");
 
-    if (heroTitle && heroTitleEl) {
+    if (heroTitle && heroTitle !== "The Art of Premium Apparel" && heroTitleEl) {
       heroTitleEl.innerHTML = heroTitle;
     }
-    if (heroDesc && heroDescEl) {
+    if (heroDesc && !heroDesc.includes("organic cotton tees") && heroDescEl) {
       heroDescEl.textContent = heroDesc;
     }
     if (heroImg && heroImgEl) {
@@ -1115,8 +1138,8 @@ document.addEventListener("DOMContentLoaded", () => {
           paymentMethod: paymentMethod,
           notes: notes,
           items: itemsToOrder,
-          subtotal: netPayable + (appliedVoucher ? discountAmount : 0),
-          discount: appliedVoucher ? discountAmount : 0,
+          subtotal: subtotal || netPayable,
+          discount: (subtotal && netPayable) ? Math.max(0, subtotal - netPayable) : 0,
           total: netPayable,
           date: new Date().toLocaleDateString(),
           status: "Transmitted"

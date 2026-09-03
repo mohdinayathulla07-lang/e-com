@@ -1,5 +1,5 @@
 ﻿-- ==============================================================================
--- DvgCart Supabase Schema: Orders, Inventory Stock & Cloud Settings
+-- DvgCart Complete Supabase Schema: Orders, Products, Stock & Cloud Settings
 -- Run this in your Supabase SQL Editor (Dashboard -> SQL Editor -> New Query -> Run)
 -- ==============================================================================
 
@@ -38,7 +38,7 @@ create policy "Allow public order updates" on public.orders for update using (tr
 drop policy if exists "Allow public order deletes" on public.orders;
 create policy "Allow public order deletes" on public.orders for delete using (true);
 
--- 2. SETTINGS TABLE (Stores Announcement Banner, Hero Banner, WhatsApp config, etc.)
+-- 2. SETTINGS TABLE (Stores Announcement Banner, Hero Banner, Promo Codes, WhatsApp config, etc.)
 create table if not exists public.settings (
   key text primary key,
   value text,
@@ -54,7 +54,7 @@ create policy "Allow public settings read" on public.settings for select using (
 drop policy if exists "Allow public settings upsert" on public.settings;
 create policy "Allow public settings upsert" on public.settings for all using (true) with check (true);
 
--- 3. PRODUCTS TABLE (Ensures stock_left column exists for inventory tracking)
+-- 3. PRODUCTS TABLE (Catalog Items, Prices, and Stock Quantities)
 create table if not exists public.products (
   id text primary key,
   title text not null,
@@ -82,3 +82,16 @@ alter table public.products enable row level security;
 
 drop policy if exists "Allow public products access" on public.products;
 create policy "Allow public products access" on public.products for all using (true) with check (true);
+
+-- 4. CATEGORIES TABLE
+create table if not exists public.categories (
+  id text primary key,
+  name text unique not null,
+  created_at timestamp with time zone default timezone('utc'::text, now())
+);
+
+-- Enable RLS on categories
+alter table public.categories enable row level security;
+
+drop policy if exists "Allow public categories access" on public.categories;
+create policy "Allow public categories access" on public.categories for all using (true) with check (true);
