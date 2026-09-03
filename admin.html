@@ -225,16 +225,26 @@
 
             <!-- Announcement & Promo Bar Management -->
             <form id="settings-announcement-form" style="margin-bottom: 30px;">
-              <h3 class="serif" style="font-size: 16px; margin-bottom: 15px; color: var(--color-accent);">Top Announcement Bar & Promo</h3>
+              <h3 class="serif" style="font-size: 16px; margin-bottom: 15px; color: var(--color-accent);">Top Announcement Bar & Promo Codes</h3>
               <div class="form-group">
                 <label class="form-label" for="set-announcement-shipping">Announcement Shipping Offer Text</label>
-                <input type="text" id="set-announcement-shipping" class="form-control" placeholder="e.g. COMPLIMENTARY INSURED EXPRESS SHIPPING ON ORDERS OVER ₹15,000">
+                <input type="text" id="set-announcement-shipping" class="form-control" placeholder="e.g. COMPLIMENTARY INSURED EXPRESS SHIPPING ON DAVANAGERE & HARIHAR ORDERS">
               </div>
               <div class="form-group">
-                <label class="form-label" for="set-announcement-promo">Promo Discount Code Text</label>
+                <label class="form-label" for="set-announcement-promo">Announcement Banner Promo Text</label>
                 <input type="text" id="set-announcement-promo" class="form-control" placeholder="e.g. USE CODE VIP10 FOR 10% OFF">
               </div>
-              <button type="submit" class="btn-luxury-outline" style="padding: 10px 20px; font-size: 11px;">Update Announcement Bar</button>
+              <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 15px;">
+                <div class="form-group">
+                  <label class="form-label" for="set-promo-code">Active Promo Code (Customer Enters)</label>
+                  <input type="text" id="set-promo-code" class="form-control" placeholder="e.g. VIP10" style="text-transform: uppercase;">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="set-promo-discount">Discount Percentage (%)</label>
+                  <input type="number" id="set-promo-discount" class="form-control" placeholder="e.g. 10" min="1" max="100">
+                </div>
+              </div>
+              <button type="submit" class="btn-luxury-outline" style="padding: 10px 20px; font-size: 11px;">Update Announcement & Promo Code</button>
             </form>
 
             <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.05); margin: 30px 0;">

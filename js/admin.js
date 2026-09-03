@@ -334,14 +334,31 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // Announcement Bar Settings
+    // Announcement Bar & Promo Code Settings
     const setAnnouncementShipping = document.getElementById("set-announcement-shipping");
     const setAnnouncementPromo = document.getElementById("set-announcement-promo");
+    const setPromoCodeInput = document.getElementById("set-promo-code");
+    const setPromoDiscountInput = document.getElementById("set-promo-discount");
+
     if (setAnnouncementShipping) {
-      setAnnouncementShipping.value = localStorage.getItem("dvgcart_announcement_shipping") || "COMPLIMENTARY INSURED EXPRESS SHIPPING ON ORDERS OVER ₹15,000";
+      setAnnouncementShipping.value = localStorage.getItem("dvgcart_announcement_shipping") || "COMPLIMENTARY INSURED EXPRESS SHIPPING ON DAVANAGERE & HARIHAR ORDERS";
     }
     if (setAnnouncementPromo) {
       setAnnouncementPromo.value = localStorage.getItem("dvgcart_announcement_promo") || "USE CODE VIP10 FOR 10% OFF";
+    }
+    if (setPromoCodeInput) {
+      setPromoCodeInput.value = localStorage.getItem("dvgcart_promo_code") || "VIP10";
+    }
+    if (setPromoDiscountInput) {
+      setPromoDiscountInput.value = localStorage.getItem("dvgcart_promo_discount_percent") || "10";
+    }
+
+    // Clean up any stale WhatsApp link with expired short code
+    const currentWa = localStorage.getItem("dvgcart_link_wa");
+    if (currentWa && (currentWa.includes("LJGK") || currentWa.includes("/message/"))) {
+      localStorage.removeItem("dvgcart_link_wa");
+      if (typeof saveCloudSetting === "function") saveCloudSetting("link_wa", "");
+      if (setWaInput) setWaInput.value = "";
     }
     
     // Custom Logo preview
@@ -811,22 +828,30 @@ document.addEventListener("DOMContentLoaded", () => {
   const settingsAnnouncementForm = document.getElementById("settings-announcement-form");
   const setAnnouncementShippingInput = document.getElementById("set-announcement-shipping");
   const setAnnouncementPromoInput = document.getElementById("set-announcement-promo");
+  const setPromoCodeInput = document.getElementById("set-promo-code");
+  const setPromoDiscountInput = document.getElementById("set-promo-discount");
 
   if (settingsAnnouncementForm) {
     settingsAnnouncementForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const shippingText = setAnnouncementShippingInput ? (setAnnouncementShippingInput.value.trim() || "COMPLIMENTARY INSURED EXPRESS SHIPPING ON ORDERS OVER ₹15,000") : "COMPLIMENTARY INSURED EXPRESS SHIPPING ON ORDERS OVER ₹15,000";
+      const shippingText = setAnnouncementShippingInput ? (setAnnouncementShippingInput.value.trim() || "COMPLIMENTARY INSURED EXPRESS SHIPPING ON DAVANAGERE & HARIHAR ORDERS") : "COMPLIMENTARY INSURED EXPRESS SHIPPING ON DAVANAGERE & HARIHAR ORDERS";
       const promoText = setAnnouncementPromoInput ? (setAnnouncementPromoInput.value.trim() || "USE CODE VIP10 FOR 10% OFF") : "USE CODE VIP10 FOR 10% OFF";
+      const promoCode = setPromoCodeInput ? (setPromoCodeInput.value.trim().toUpperCase() || "VIP10") : "VIP10";
+      const promoDiscount = setPromoDiscountInput ? (parseInt(setPromoDiscountInput.value) || 10) : 10;
 
       localStorage.setItem("dvgcart_announcement_shipping", shippingText);
       localStorage.setItem("dvgcart_announcement_promo", promoText);
+      localStorage.setItem("dvgcart_promo_code", promoCode);
+      localStorage.setItem("dvgcart_promo_discount_percent", promoDiscount.toString());
 
-      showToast("Updating Top Announcement Bar in database...", false);
+      showToast("Updating Announcement & Promo Codes in database...", false);
       await saveCloudSettingsBatch({
         announcement_shipping: shippingText,
-        announcement_promo: promoText
+        announcement_promo: promoText,
+        promo_code: promoCode,
+        promo_discount_percent: promoDiscount.toString()
       });
-      showToast("Top announcement banner synced & live on storefront!");
+      showToast(`Promo Code '${promoCode}' (${promoDiscount}% OFF) synced to storefront!`);
     });
   }
 

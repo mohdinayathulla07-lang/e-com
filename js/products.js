@@ -398,6 +398,8 @@ async function fetchCloudSettings() {
       hero_price_amount: "dvgcart_hero_price_amount",
       announcement_shipping: "dvgcart_announcement_shipping",
       announcement_promo: "dvgcart_announcement_promo",
+      promo_code: "dvgcart_promo_code",
+      promo_discount_percent: "dvgcart_promo_discount_percent",
       logo: "dvgcart_logo"
     };
 

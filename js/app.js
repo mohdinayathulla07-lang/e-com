@@ -98,17 +98,20 @@ document.addEventListener("DOMContentLoaded", () => {
     if (footerLinkFb) footerLinkFb.href = localStorage.getItem("dvgcart_link_fb") || "#";
     if (footerLinkYt) footerLinkYt.href = localStorage.getItem("dvgcart_link_yt") || "#";
     
-    const savedWaLink = localStorage.getItem("dvgcart_link_wa");
+    let savedWaLink = localStorage.getItem("dvgcart_link_wa");
     const adminPhoneVal = localStorage.getItem("dvgcart_admin_phone") || adminPhone || "919483635095";
     const sanitizedPhone = adminPhoneVal.replace(/[^0-9]/g, "") || "919483635095";
 
-    let validFloatingWaUrl = "";
-    if (savedWaLink && savedWaLink.includes("/message/")) {
-      // wa.me/message links are WhatsApp Business links that fail if query string is appended
-      validFloatingWaUrl = savedWaLink;
-    } else {
-      validFloatingWaUrl = `https://wa.me/${sanitizedPhone}?text=Hello%20DvgCart%20Concierge%2C%20I%20would%20like%20VIP%20assistance%20with%20your%20collection.`;
+    // Auto-clean any expired WhatsApp Business shortlink (e.g. LJGKPHIBJALKG1)
+    if (savedWaLink && (savedWaLink.includes("LJGK") || savedWaLink.includes("/message/"))) {
+      localStorage.removeItem("dvgcart_link_wa");
+      savedWaLink = null;
+      if (typeof saveCloudSetting === "function") {
+        saveCloudSetting("link_wa", "");
+      }
     }
+
+    const validFloatingWaUrl = `https://wa.me/${sanitizedPhone}?text=${encodeURIComponent("Hello DvgCart Concierge, I would like VIP assistance with your collection.")}`;
 
     if (footerLinkWa) footerLinkWa.href = validFloatingWaUrl;
     if (floatingWaBtn) floatingWaBtn.href = validFloatingWaUrl;
@@ -505,18 +508,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     
-    // Free Shipping Progress calculation (threshold: ₹15,000)
-    const shippingThreshold = 15000;
-    if (freeShippingBarFill && freeShippingText) {
-      if (subtotal >= shippingThreshold) {
-        freeShippingBarFill.style.width = "100%";
-        freeShippingText.innerHTML = `🎉 <strong>Complimentary Insured Courier Unlocked!</strong>`;
-      } else {
-        const pct = Math.min(100, Math.round((subtotal / shippingThreshold) * 100));
-        freeShippingBarFill.style.width = `${pct}%`;
-        const diff = shippingThreshold - subtotal;
-        freeShippingText.innerHTML = `Add <strong>₹${diff.toLocaleString('en-IN')}</strong> more for Free Courier`;
-      }
+    // Free Delivery across Davanagere & Harihar
+    if (freeShippingText) {
+      freeShippingText.innerHTML = `✦ <strong>Complimentary Free Delivery</strong> across Davanagere & Harihar`;
+    }
+    if (freeShippingBarFill) {
+      freeShippingBarFill.style.width = "100%";
     }
 
     // Promo Voucher Calculation
@@ -611,25 +608,31 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Promo Code Engine
+  // Promo Code Engine (Configured dynamically by Admin)
   if (applyPromoBtn && promoInput) {
+    const defaultPromoCode = (localStorage.getItem("dvgcart_promo_code") || "VIP10").toUpperCase().trim();
+    promoInput.placeholder = `Promo code (e.g. ${defaultPromoCode})`;
+
     applyPromoBtn.addEventListener("click", () => {
       const code = promoInput.value.trim().toUpperCase();
       if (!code) return;
 
-      if (code === "VIP10") {
-        appliedPromo = { code: "VIP10", discountPercent: 10 };
+      const adminPromoCode = (localStorage.getItem("dvgcart_promo_code") || "VIP10").toUpperCase().trim();
+      const adminDiscountPercent = parseInt(localStorage.getItem("dvgcart_promo_discount_percent")) || 10;
+
+      if (code === adminPromoCode) {
+        appliedPromo = { code: adminPromoCode, discountPercent: adminDiscountPercent };
         if (promoStatusMsg) {
           promoStatusMsg.className = "promo-status-msg success";
-          promoStatusMsg.textContent = "✓ 10% VIP client discount applied!";
+          promoStatusMsg.textContent = `✓ ${adminDiscountPercent}% discount applied (${adminPromoCode})!`;
           promoStatusMsg.style.display = "block";
         }
-        showToast("VIP10 voucher activated: 10% off entire order.");
+        showToast(`${adminPromoCode} voucher activated: ${adminDiscountPercent}% off entire order.`);
       } else {
         appliedPromo = null;
         if (promoStatusMsg) {
           promoStatusMsg.className = "promo-status-msg error";
-          promoStatusMsg.textContent = "Invalid voucher code. Try 'VIP10'.";
+          promoStatusMsg.textContent = `Invalid voucher code. Try '${adminPromoCode}'.`;
           promoStatusMsg.style.display = "block";
         }
       }
@@ -744,12 +747,18 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderAnnouncementBar() {
     const shippingEl = document.getElementById("announcement-shipping-text");
     const promoEl = document.getElementById("announcement-promo-text");
-    const customShipping = localStorage.getItem("dvgcart_announcement_shipping");
+    const customShipping = localStorage.getItem("dvgcart_announcement_shipping") || "COMPLIMENTARY INSURED EXPRESS SHIPPING ON DAVANAGERE & HARIHAR ORDERS";
     const customPromo = localStorage.getItem("dvgcart_announcement_promo");
+    const activeCode = localStorage.getItem("dvgcart_promo_code") || "VIP10";
+    const activePct = localStorage.getItem("dvgcart_promo_discount_percent") || "10";
 
-    if (customShipping && shippingEl) shippingEl.textContent = customShipping;
-    if (customPromo && promoEl) {
-      promoEl.innerHTML = customPromo.replace(/(VIP10|[A-Z0-9]{4,})/g, '<strong class="gold-text">$1</strong>');
+    if (shippingEl) shippingEl.textContent = customShipping;
+    if (promoEl) {
+      if (customPromo) {
+        promoEl.innerHTML = customPromo.replace(/([A-Z0-9]{3,})/g, '<strong class="gold-text">$1</strong>');
+      } else {
+        promoEl.innerHTML = `USE CODE <strong class="gold-text">${activeCode}</strong> FOR ${activePct}% OFF`;
+      }
     }
   }
   renderAnnouncementBar();
@@ -969,8 +978,8 @@ document.addEventListener("DOMContentLoaded", () => {
       ${itemsHTML}
       ${discountRowHTML}
       <div class="checkout-preview-item" style="color: var(--color-text-muted);">
-        <span>Insured Express Courier</span>
-        <span class="gold-text">Complimentary</span>
+        <span>Express Delivery (Davanagere & Harihar)</span>
+        <span class="gold-text">Complimentary Free</span>
       </div>
       <div class="checkout-preview-total-row">
         <span>Total Payable:</span>
@@ -1045,10 +1054,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const netPayable = Math.max(0, subtotal - discount);
 
-    messageText += `🚚 *Express Courier:* Complimentary Insured Delivery\n`;
+    messageText += `🚚 *Delivery:* Complimentary Free Delivery (Davanagere & Harihar)\n`;
     messageText += `\n💵 *NET PAYABLE:* ₹${netPayable.toLocaleString('en-IN')}\n`;
     messageText += `------------------------------------\n`;
-    messageText += `🚀 Transmitted via DvgCart Private VIP Concierge.`;
+    messageText += `🚀 Transmitted via DvgCart Storefront Order.`;
 
     return { messageText, orderId, subtotal, netPayable };
   }
