@@ -356,66 +356,48 @@ document.addEventListener("DOMContentLoaded", () => {
         : `<span class="product-card-stock"><span class="stock-indicator-dot"></span> In Stock</span>`;
 
       card.innerHTML = `
-        <div class="product-card-img-container">
+        <div class="product-card-img-container quickview-action" data-id="${product.id}">
           ${badgeHTML}
           <img src="${product.image || 'images/bag.png'}" alt="${product.title || 'Product'}" class="product-card-img" onerror="this.src='images/bag.png'">
           <div class="product-card-overlay">
             <button class="action-circle-btn quickview-action" data-id="${product.id}" aria-label="Quick View">
               <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
-            <button class="action-circle-btn addcart-icon-action" data-id="${product.id}" aria-label="Add to Bag">
-              <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-            </button>
           </div>
         </div>
         <div class="product-card-info">
-          <div class="product-card-top-row">
-            <span class="product-card-category">${product.category || 'Creations'}</span>
-            <span class="product-card-rating">★ ${ratingVal} <span>(${reviewsVal})</span></span>
+          <div class="card-text-block quickview-action" data-id="${product.id}">
+            <h3 class="card-product-title">${product.title || 'Masterpiece'}</h3>
+            <span class="card-product-price">${priceFormatted}</span>
           </div>
-          <h3 class="product-card-title">${product.title || 'Masterpiece'}</h3>
-          <p class="product-card-desc">${product.description || ''}</p>
-          <div class="product-card-price-row">
-            <span class="product-card-price">${priceFormatted}</span>
-            ${stockHTML}
-          </div>
-          <div class="product-card-btn-group">
-            <button class="btn-card-add addcart-action" data-id="${product.id}">
-              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
-              <span>Add</span>
-            </button>
-            <button class="btn-card-buy buynow-action" data-id="${product.id}">
-              <span>⚡ Buy Now</span>
-            </button>
-          </div>
+          <button class="card-direct-shop-btn addcart-direct-action" data-id="${product.id}" aria-label="Add to Bag">
+            <svg viewBox="0 0 24 24">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            <span>SHOP</span>
+          </button>
         </div>
       `;
 
       productsGrid.appendChild(card);
     });
 
-    // Quickview Listeners
-    document.querySelectorAll(".quickview-action").forEach(btn => {
-      btn.addEventListener("click", (e) => {
+    // Quickview Listeners on Image and Title
+    document.querySelectorAll(".quickview-action").forEach(el => {
+      el.addEventListener("click", (e) => {
+        // Prevent trigger if clicking on action button
+        if (e.target.closest(".addcart-direct-action")) return;
         const id = e.currentTarget.getAttribute("data-id");
         openQuickView(id);
       });
     });
 
-    // Add to Cart Listeners
-    document.querySelectorAll(".addcart-action, .addcart-icon-action").forEach(btn => {
+    // Direct In-Card "Add to Cart / SHOP" Button
+    document.querySelectorAll(".addcart-direct-action").forEach(btn => {
       btn.addEventListener("click", (e) => {
+        e.stopPropagation();
         const id = e.currentTarget.getAttribute("data-id");
         addToCart(id);
-      });
-    });
-
-    // Direct Buy Now Listeners
-    document.querySelectorAll(".buynow-action").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        const id = e.currentTarget.getAttribute("data-id");
-        const prod = products.find(p => p.id === id);
-        if (prod) triggerDirectBuy(prod);
       });
     });
   }
@@ -723,30 +705,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Dynamic Hero Banner
   function renderHeroBanner() {
-    const heroTagEl = document.querySelector(".hero-tag");
-    const heroTitleEl = document.querySelector(".hero-title");
-    const heroDescEl = document.querySelector(".hero-desc");
+    const heroTitleEl = document.querySelector(".hero-title-elegance, .hero-title");
+    const heroDescEl = document.querySelector(".hero-desc-elegance, .hero-desc");
     const heroImgEl = document.getElementById("hero-featured-image");
-    const heroPriceTitleEl = document.querySelector(".hero-price-title");
-    const heroPriceAmountEl = document.querySelector(".hero-price-amount");
 
-    const heroTag = localStorage.getItem("dvgcart_hero_tag");
     const heroTitle = localStorage.getItem("dvgcart_hero_title");
     const heroDesc = localStorage.getItem("dvgcart_hero_desc");
     const heroImg = localStorage.getItem("dvgcart_hero_image");
-    const heroPriceTitle = localStorage.getItem("dvgcart_hero_price_title");
-    const heroPriceAmount = localStorage.getItem("dvgcart_hero_price_amount");
 
-    if (heroTag && heroTagEl) heroTagEl.textContent = heroTag;
-    if (heroTitle && heroTitleEl) {
-      heroTitleEl.innerHTML = heroTitle.includes("span") 
-        ? heroTitle 
-        : heroTitle.replace(/(Apparel|Luxury|Release|Collection|Tee|Headphones|Watches|Masterpiece)/i, '<span class="gold-text">$1</span>');
+    if (heroTitle && heroTitle !== "The Art of Premium Apparel" && heroTitleEl) {
+      heroTitleEl.innerHTML = heroTitle;
     }
-    if (heroDesc && heroDescEl) heroDescEl.textContent = heroDesc;
-    if (heroImg && heroImgEl) heroImgEl.src = heroImg;
-    if (heroPriceTitle && heroPriceTitleEl) heroPriceTitleEl.textContent = heroPriceTitle;
-    if (heroPriceAmount && heroPriceAmountEl) heroPriceAmountEl.textContent = heroPriceAmount;
+    if (heroDesc && !heroDesc.includes("organic cotton tees") && heroDescEl) {
+      heroDescEl.textContent = heroDesc;
+    }
+    if (heroImg && !heroImg.includes("1786347967249") && heroImgEl) {
+      heroImgEl.src = heroImg;
+    }
   }
   renderHeroBanner();
 

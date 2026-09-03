@@ -39,35 +39,59 @@
   </div>
 
   <!-- NAVIGATION HEADER -->
-  <header id="main-header">
+  <header id="main-header" class="header-gold-elegance">
     <div class="header-container">
-      <!-- Logo Container -->
-      <a href="index.html" class="logo" id="store-logo-link">
+      <!-- Logo Container with Regal Monogram Crest -->
+      <a href="index.html" class="logo brand-crest-link" id="store-logo-link">
         <div class="logo-text" id="logo-display-container">
-          <div class="logo-icon-fallback">D</div> DVG<span>CART</span>
+          <div class="regal-crest-icon">
+            <svg viewBox="0 0 44 44" fill="none">
+              <path d="M22 3L27 10L36 9L30 17L35 25L26 23L22 30L18 23L9 25L14 17L8 9L17 10L22 3Z" stroke="#d4af37" stroke-width="1.6" stroke-linejoin="round"/>
+              <circle cx="22" cy="22" r="16" stroke="#d4af37" stroke-width="0.8" stroke-dasharray="2 3"/>
+              <text x="22" y="26" text-anchor="middle" fill="#d4af37" font-size="12" font-family="'Cinzel', 'Playfair Display', serif" font-weight="700">D</text>
+            </svg>
+          </div>
+          <span class="brand-elegance-text">DVG<span>CART</span></span>
         </div>
       </a>
 
-      <!-- Menu Items -->
-      <ul class="nav-menu">
-        <li><a href="#hero" class="nav-link active" id="nav-home">Home</a></li>
-        <li><a href="#catalog" class="nav-link" id="nav-catalog">Catalog</a></li>
-        <li><a href="#about" class="nav-link" id="nav-about">Philosophy</a></li>
+      <!-- Menu Items Centered -->
+      <ul class="nav-menu elegance-nav-menu">
+        <li><a href="#hero" class="nav-link active" id="nav-home">HOME</a></li>
+        <li><a href="#catalog" class="nav-link" id="nav-catalog">COLLECTIONS</a></li>
+        <li><a href="#about" class="nav-link" id="nav-editorial">EDITORIAL</a></li>
+        <li><a href="#about" class="nav-link" id="nav-about">ABOUT</a></li>
+        <li><a href="#catalog" class="nav-link" id="nav-shop">SHOP</a></li>
       </ul>
 
-      <!-- Action Items -->
-      <div class="nav-actions">
+      <!-- Action Items Right -->
+      <div class="nav-actions elegance-nav-actions">
         <!-- Quick Search Toggle in Header -->
-        <a href="#catalog" class="header-action-btn" id="header-search-btn" aria-label="Search Collection">
-          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <a href="#catalog" class="header-action-btn" id="header-search-btn" aria-label="Search Collection" title="Search">
+          <svg viewBox="0 0 24 24" width="19" height="19" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
         </a>
 
+        <!-- Admin / Account Profile Portal -->
+        <a href="admin.html" class="header-action-btn" id="header-account-btn" aria-label="VIP Admin Portal" title="VIP Portal">
+          <svg viewBox="0 0 24 24" width="19" height="19" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </a>
+
+        <!-- Wishlist Icon -->
+        <button class="header-action-btn" id="header-wishlist-btn" aria-label="Saved Wishlist" title="Wishlist">
+          <svg viewBox="0 0 24 24" width="19" height="19" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+        </button>
+
         <!-- Cart Button -->
-        <button class="cart-icon-btn" id="cart-trigger" aria-label="Open Shopping Cart">
-          <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <button class="cart-icon-btn elegance-cart-btn" id="cart-trigger" aria-label="Open Shopping Cart" title="Shopping Bag">
+          <svg viewBox="0 0 24 24" width="21" height="21" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0" />
           </svg>
           <span class="cart-badge" id="cart-count">0</span>
@@ -83,53 +107,34 @@
     </div>
   </header>
 
-  <!-- HERO SECTION -->
-  <section class="hero" id="hero">
-    <div class="hero-overlay"></div>
-    <div class="hero-container">
-      <div class="hero-content">
-        <div class="hero-badge-pill">
-          <span class="pulse-dot"></span>
-          <span>Curated Haute Couture • Edition 2026</span>
-        </div>
-        <h1 class="hero-title serif">The Art of <br><span class="gold-text">Modern Luxury</span></h1>
-        <p class="hero-desc">Elevate your daily signature. Discover hand-tailored Pima cotton essentials, Tuscan leather masterpieces, and rare artisanal fragrances with frictionless 1-click WhatsApp concierge checkout.</p>
+  <!-- HERO SECTION - GOLD & ELEGANCE -->
+  <section class="hero hero-gold-elegance" id="hero">
+    <div class="hero-container hero-elegance-grid">
+      <!-- Left Column: Typography & Action -->
+      <div class="hero-elegance-left">
+        <h1 class="hero-title-elegance">GOLD & ELEGANCE</h1>
+        <p class="hero-desc-elegance">Our luxury brand stands for quality, styling, luxury brand, sophistication and pre-eminent execution.</p>
         
-        <div class="hero-actions">
-          <a href="#catalog" class="btn-luxury">Explore Collection</a>
-          <button class="btn-luxury-outline" id="hero-quickview-btn">View Masterpiece</button>
-        </div>
-
-        <div class="hero-stats-row">
-          <div class="hero-stat-item">
-            <span class="hero-stat-value gold-text">★ 4.95</span>
-            <span class="hero-stat-label">Client Satisfaction</span>
-          </div>
-          <div class="hero-stat-divider"></div>
-          <div class="hero-stat-item">
-            <span class="hero-stat-value">100%</span>
-            <span class="hero-stat-label">Certified Authentic</span>
-          </div>
-          <div class="hero-stat-divider"></div>
-          <div class="hero-stat-item">
-            <span class="hero-stat-value gold-text">Instant</span>
-            <span class="hero-stat-label">WhatsApp Ordering</span>
-          </div>
+        <div class="hero-elegance-actions">
+          <a href="#catalog" class="btn-discover-now" id="hero-discover-btn">DISCOVER NOW</a>
+          <button class="btn-luxury-outline" id="hero-quickview-btn" style="display:none;">View Masterpiece</button>
         </div>
       </div>
 
-      <div class="hero-image-wrapper">
-        <div class="hero-image-frame">
-          <img src="images/tshirt.png" alt="Signature Pima Tee" class="hero-img" id="hero-featured-image">
-          <div class="hero-price-tag">
-            <div class="hero-price-title">Signature Pima Tee</div>
-            <div class="hero-price-amount">₹9,999</div>
-          </div>
-          <div class="hero-floating-badge">
-            <span class="gold-text">✦</span> Limited Edition Release
-          </div>
+      <!-- Right Column: Editorial Model Visual -->
+      <div class="hero-elegance-right">
+        <div class="hero-model-container">
+          <img src="images/hero_model.jpg" alt="Gold & Elegance Editorial" class="hero-model-photo" id="hero-featured-image">
+          <div class="hero-model-frame-accent"></div>
         </div>
       </div>
+    </div>
+
+    <!-- Bottom Segmented Slider Indicator -->
+    <div class="hero-elegance-slider-dots">
+      <span class="dash-bar active"></span>
+      <span class="dot-bar"></span>
+      <span class="dot-bar"></span>
     </div>
   </section>
 
