@@ -396,6 +396,8 @@ async function fetchCloudSettings() {
       hero_image: "dvgcart_hero_image",
       hero_price_title: "dvgcart_hero_price_title",
       hero_price_amount: "dvgcart_hero_price_amount",
+      announcement_shipping: "dvgcart_announcement_shipping",
+      announcement_promo: "dvgcart_announcement_promo",
       logo: "dvgcart_logo"
     };
 
@@ -447,6 +449,61 @@ async function saveCloudSettingsBatch(settingsObj) {
   } catch (err) {
     console.error("Save cloud settings batch error:", err);
     return false;
+  }
+}
+
+/**
+ * Save a Client Order into Supabase 'orders' table
+ */
+async function saveCloudOrder(orderData) {
+  db = getSupabaseClient();
+  if (!db) return { success: false, error: "No database client" };
+
+  try {
+    const { data, error } = await db.from("orders").insert([
+      {
+        order_id: orderData.orderId,
+        client_name: orderData.clientName,
+        client_phone: orderData.clientPhone,
+        client_address: orderData.clientAddress || "",
+        city: orderData.city || "",
+        pincode: orderData.pincode || "",
+        payment_method: orderData.paymentMethod || "WhatsApp Direct",
+        notes: orderData.notes || "",
+        items: orderData.items || [],
+        subtotal: orderData.subtotal || orderData.total,
+        discount: orderData.discount || 0,
+        total: orderData.total,
+        status: orderData.status || "Transmitted"
+      }
+    ]);
+
+    if (error) throw error;
+    return { success: true, data };
+  } catch (err) {
+    console.warn("Save cloud order note (table might need creation in SQL editor):", err.message || err);
+    return { success: false, error: err.message || String(err) };
+  }
+}
+
+/**
+ * Fetch Client Orders from Supabase 'orders' table
+ */
+async function fetchCloudOrders() {
+  db = getSupabaseClient();
+  if (!db) return null;
+
+  try {
+    const { data, error } = await db
+      .from("orders")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+    return data || [];
+  } catch (err) {
+    console.warn("Fetch cloud orders note:", err.message || err);
+    return null;
   }
 }
 

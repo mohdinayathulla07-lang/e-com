@@ -108,6 +108,7 @@
                   <th>Product</th>
                   <th>Category</th>
                   <th>Price</th>
+                  <th>Stock / Qty</th>
                   <th>Status</th>
                   <th>Actions</th>
                 </tr>
@@ -222,6 +223,20 @@
               <button type="submit" class="btn-luxury-outline" style="padding: 10px 20px; font-size: 11px;">Update Hero Banner</button>
             </form>
 
+            <!-- Announcement & Promo Bar Management -->
+            <form id="settings-announcement-form" style="margin-bottom: 30px;">
+              <h3 class="serif" style="font-size: 16px; margin-bottom: 15px; color: var(--color-accent);">Top Announcement Bar & Promo</h3>
+              <div class="form-group">
+                <label class="form-label" for="set-announcement-shipping">Announcement Shipping Offer Text</label>
+                <input type="text" id="set-announcement-shipping" class="form-control" placeholder="e.g. COMPLIMENTARY INSURED EXPRESS SHIPPING ON ORDERS OVER ₹15,000">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="set-announcement-promo">Promo Discount Code Text</label>
+                <input type="text" id="set-announcement-promo" class="form-control" placeholder="e.g. USE CODE VIP10 FOR 10% OFF">
+              </div>
+              <button type="submit" class="btn-luxury-outline" style="padding: 10px 20px; font-size: 11px;">Update Announcement Bar</button>
+            </form>
+
             <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.05); margin: 30px 0;">
 
             <!-- Category Management -->
@@ -334,7 +349,7 @@
           <input type="text" id="prod-title" class="form-control" placeholder="e.g. Royal Oak Platinum" required>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div style="display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 15px;">
           <div class="form-group">
             <label class="form-label" for="prod-category">Category</label>
             <select id="prod-category" class="form-control" required style="appearance: none; background-image: url('data:image/svg+xml;utf8,<svg fill=%22%23D4AF37%22 height=%2224%22 viewBox=%220 0 24 24%22 width=%2224%22 xmlns=%22http://www.w3.org/2000/svg%22><path d=%22M7 10l5 5 5-5z%22/><path d=%22M0 0h24v24H0z%22 fill=%22none%22/></svg>'); background-repeat: no-repeat; background-position: right 10px center;">
@@ -342,8 +357,12 @@
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label" for="prod-price">Retail Price ($)</label>
-            <input type="number" id="prod-price" class="form-control" placeholder="e.g. 45000" min="0" required>
+            <label class="form-label" for="prod-price">Retail Price (₹)</label>
+            <input type="number" id="prod-price" class="form-control" placeholder="e.g. 1499" min="0" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="prod-stock">Stock Quantity</label>
+            <input type="number" id="prod-stock" class="form-control" placeholder="e.g. 15" min="0" value="10" required>
           </div>
         </div>
 

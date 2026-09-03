@@ -99,15 +99,22 @@ document.addEventListener("DOMContentLoaded", () => {
     if (footerLinkYt) footerLinkYt.href = localStorage.getItem("dvgcart_link_yt") || "#";
     
     const savedWaLink = localStorage.getItem("dvgcart_link_wa");
-    const sanitizedPhone = adminPhone.replace(/[^0-9]/g, "");
+    const adminPhoneVal = localStorage.getItem("dvgcart_admin_phone") || adminPhone || "919483635095";
+    const sanitizedPhone = adminPhoneVal.replace(/[^0-9]/g, "") || "919483635095";
 
-    const fullWaUrl = savedWaLink ? savedWaLink : (sanitizedPhone ? `https://wa.me/${sanitizedPhone}` : "#");
+    let validFloatingWaUrl = "";
+    if (savedWaLink && savedWaLink.includes("/message/")) {
+      // wa.me/message links are WhatsApp Business links that fail if query string is appended
+      validFloatingWaUrl = savedWaLink;
+    } else {
+      validFloatingWaUrl = `https://wa.me/${sanitizedPhone}?text=Hello%20DvgCart%20Concierge%2C%20I%20would%20like%20VIP%20assistance%20with%20your%20collection.`;
+    }
 
-    if (footerLinkWa) footerLinkWa.href = fullWaUrl;
-    if (floatingWaBtn) floatingWaBtn.href = `${fullWaUrl}?text=Hello%20DvgCart%20Concierge%2C%20I%20would%20like%20VIP%20assistance%20with%20your%20collection.`;
+    if (footerLinkWa) footerLinkWa.href = validFloatingWaUrl;
+    if (floatingWaBtn) floatingWaBtn.href = validFloatingWaUrl;
     
     const mobTabWa = document.getElementById("mob-tab-wa");
-    if (mobTabWa) mobTabWa.href = fullWaUrl;
+    if (mobTabWa) mobTabWa.href = validFloatingWaUrl;
 
     const footerPhoneDisplay = document.getElementById("footer-phone-display");
     if (footerPhoneDisplay) {
@@ -350,10 +357,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const ratingVal = product.rating || 4.9;
       const reviewsVal = product.reviewsCount || 120;
-      const stockLeft = product.stockLeft || 5;
-      const stockHTML = stockLeft <= 5 
-        ? `<span class="product-card-stock low-stock"><span class="stock-indicator-dot"></span> Only ${stockLeft} left</span>`
-        : `<span class="product-card-stock"><span class="stock-indicator-dot"></span> In Stock</span>`;
+      const stock = product.stockLeft !== undefined ? Number(product.stockLeft) : (product.quantity !== undefined ? Number(product.quantity) : 10);
+      let stockHTML = "";
+      const isOutOfStock = stock <= 0;
+      if (isOutOfStock) {
+        stockHTML = `<span style="color: #ef4444; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; margin-top: 3px; display: block;">OUT OF STOCK</span>`;
+      } else if (stock <= 5) {
+        stockHTML = `<span style="color: #ef4444; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; margin-top: 3px; display: block;">✦ Limited Stock: Only ${stock} left</span>`;
+      }
+
+      const shopBtnDisabled = isOutOfStock ? "disabled style='opacity: 0.4; cursor: not-allowed; border-color: rgba(255,255,255,0.1); color: #71717a;'" : "";
+      const shopBtnText = isOutOfStock ? "SOLD" : "SHOP";
 
       card.innerHTML = `
         <div class="product-card-img-container quickview-action" data-id="${product.id}">
@@ -369,12 +383,13 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="card-text-block quickview-action" data-id="${product.id}">
             <h3 class="card-product-title">${product.title || 'Masterpiece'}</h3>
             <span class="card-product-price">${priceFormatted}</span>
+            ${stockHTML}
           </div>
-          <button class="card-direct-shop-btn addcart-direct-action" data-id="${product.id}" aria-label="Add to Bag">
+          <button class="card-direct-shop-btn addcart-direct-action" data-id="${product.id}" aria-label="Add to Bag" ${shopBtnDisabled}>
             <svg viewBox="0 0 24 24">
               <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0"/>
             </svg>
-            <span>SHOP</span>
+            <span>${shopBtnText}</span>
           </button>
         </div>
       `;
@@ -713,17 +728,31 @@ document.addEventListener("DOMContentLoaded", () => {
     const heroDesc = localStorage.getItem("dvgcart_hero_desc");
     const heroImg = localStorage.getItem("dvgcart_hero_image");
 
-    if (heroTitle && heroTitle !== "The Art of Premium Apparel" && heroTitleEl) {
+    if (heroTitle && heroTitleEl) {
       heroTitleEl.innerHTML = heroTitle;
     }
-    if (heroDesc && !heroDesc.includes("organic cotton tees") && heroDescEl) {
+    if (heroDesc && heroDescEl) {
       heroDescEl.textContent = heroDesc;
     }
-    if (heroImg && !heroImg.includes("1786347967249") && heroImgEl) {
+    if (heroImg && heroImgEl) {
       heroImgEl.src = heroImg;
     }
   }
   renderHeroBanner();
+
+  // Dynamic Announcement & Promo Bar
+  function renderAnnouncementBar() {
+    const shippingEl = document.getElementById("announcement-shipping-text");
+    const promoEl = document.getElementById("announcement-promo-text");
+    const customShipping = localStorage.getItem("dvgcart_announcement_shipping");
+    const customPromo = localStorage.getItem("dvgcart_announcement_promo");
+
+    if (customShipping && shippingEl) shippingEl.textContent = customShipping;
+    if (customPromo && promoEl) {
+      promoEl.innerHTML = customPromo.replace(/(VIP10|[A-Z0-9]{4,})/g, '<strong class="gold-text">$1</strong>');
+    }
+  }
+  renderAnnouncementBar();
 
   // Quick View Modal
   function openQuickView(productId) {
@@ -1065,21 +1094,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
       showToast("Connecting with VIP concierge on WhatsApp...", 2000);
 
-      setTimeout(() => {
-        // Save order in LocalStorage for admin dashboard
-        const orders = JSON.parse(localStorage.getItem("dvgcart_orders")) || [];
+      setTimeout(async () => {
+        // Build newOrder object
         const newOrder = {
           orderId: orderId,
           clientName: name,
           clientPhone: phone,
-          items: itemsToOrder,
-          total: netPayable,
+          clientAddress: address,
+          city: city,
+          pincode: pincode,
           paymentMethod: paymentMethod,
+          notes: notes,
+          items: itemsToOrder,
+          subtotal: netPayable + (appliedVoucher ? discountAmount : 0),
+          discount: appliedVoucher ? discountAmount : 0,
+          total: netPayable,
           date: new Date().toLocaleDateString(),
           status: "Transmitted"
         };
+
+        // 1. Save order in LocalStorage
+        const orders = JSON.parse(localStorage.getItem("dvgcart_orders")) || [];
         orders.unshift(newOrder);
         localStorage.setItem("dvgcart_orders", JSON.stringify(orders));
+
+        // 2. Save order in Supabase Database 'orders' table
+        if (typeof saveCloudOrder === "function") {
+          saveCloudOrder(newOrder);
+        }
+
+        // 3. Deduct inventory quantities
+        let inventoryChanged = false;
+        itemsToOrder.forEach(orderItem => {
+          const productInCatalog = products.find(p => p.id === orderItem.id);
+          if (productInCatalog && typeof productInCatalog.stockLeft === "number") {
+            productInCatalog.stockLeft = Math.max(0, productInCatalog.stockLeft - (orderItem.quantity || 1));
+            inventoryChanged = true;
+          }
+        });
+        if (inventoryChanged) {
+          saveProducts(products);
+          if (typeof saveCloudCatalog === "function") {
+            saveCloudCatalog(products, categories);
+          }
+          renderProducts();
+        }
 
         // Open WhatsApp
         window.open(whatsappUrl, "_blank");
@@ -1182,6 +1241,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initLogo();
     initSocialLinks();
     renderHeroBanner();
+    renderAnnouncementBar();
 
     const cloudData = await fetchCloudCatalog();
     if (cloudData && cloudData.products && cloudData.products.length > 0) {

@@ -139,7 +139,7 @@ button {
 }
 
 /* Navigation Header */
-header {
+#main-header {
   position: fixed;
   top: 38px;
   left: 0;
@@ -156,7 +156,7 @@ header {
   transition: var(--transition-smooth);
 }
 
-header.scrolled {
+#main-header.scrolled {
   top: 0;
   height: 70px;
   background-color: rgba(10, 10, 10, 0.95);
@@ -877,24 +877,17 @@ header.scrolled {
   letter-spacing: 0.5px;
 }
 
-/* Product Catalog Grid - Gold & Elegance 4-Column Showcase */
+/* Product Catalog Grid - Gold & Elegance Responsive Showcase */
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 22px;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 25px;
 }
 
-@media (max-width: 1100px) {
-  .products-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-  }
-}
-
-@media (max-width: 580px) {
+@media (max-width: 640px) {
   .products-grid {
     grid-template-columns: 1fr;
-    gap: 18px;
+    gap: 20px;
   }
 }
 
@@ -1006,12 +999,14 @@ header.scrolled {
 
 /* Bottom Card Info Area */
 .product-card-info {
-  padding: 16px 18px;
+  padding: 14px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #09090c;
   flex-grow: 1;
+  gap: 12px;
+  border-top: 1px solid rgba(212, 175, 55, 0.25);
 }
 
 .card-text-block {
@@ -1020,20 +1015,23 @@ header.scrolled {
   gap: 4px;
   cursor: pointer;
   flex: 1;
-  padding-right: 10px;
+  min-width: 0; /* Ensures flex container allows child text wrapping/truncation */
 }
 
 .card-product-title {
   font-family: var(--font-serif);
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   text-transform: uppercase;
   color: #f3f4f6;
   margin: 0;
-  white-space: nowrap;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
+  word-break: break-word;
   transition: color var(--transition-fast);
 }
 
@@ -1056,18 +1054,20 @@ header.scrolled {
   justify-content: center;
   gap: 3px;
   background: transparent;
-  border: 1px solid rgba(212, 175, 55, 0.35);
+  border: 1px solid rgba(212, 175, 55, 0.45);
   border-radius: 2px;
   color: var(--color-accent);
-  padding: 8px 12px;
+  padding: 7px 12px;
+  min-width: 58px;
+  height: 42px;
   cursor: pointer;
   transition: var(--transition-fast);
   flex-shrink: 0;
 }
 
 .card-direct-shop-btn svg {
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
   stroke: currentColor;
   fill: none;
   stroke-width: 1.6;
@@ -2332,23 +2332,63 @@ textarea.form-control {
 }
 
 .admin-header {
-  border-bottom: 1px solid var(--color-border);
-  padding: 20px 40px;
-  background-color: var(--color-primary);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  position: sticky !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 70px !important;
+  background-color: #0b0b0f !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.25) !important;
+  padding: 16px 40px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  z-index: 1000 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7) !important;
 }
 
 .admin-nav-actions {
   display: flex;
-  gap: 20px;
+  align-items: center;
+  gap: 15px;
 }
 
 .admin-container {
   max-width: var(--max-width);
-  margin: 40px auto;
+  margin: 35px auto 60px;
   padding: 0 40px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Red Low-Stock & In-Stock Badges */
+.badge-stock-danger {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  animation: pulseLowStock 2s infinite;
+}
+
+@keyframes pulseLowStock {
+  0%, 100% { opacity: 1; border-color: rgba(239, 68, 68, 0.5); }
+  50% { opacity: 0.7; border-color: #ef4444; box-shadow: 0 0 8px rgba(239, 68, 68, 0.4); }
+}
+
+.badge-stock-success {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #4ade80;
+  font-size: 11px;
+  font-weight: 500;
 }
 
 /* Login Card */

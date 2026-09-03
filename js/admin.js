@@ -277,12 +277,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function updateStats() {
+  function updateStats(ordersList = null) {
     const products = getProducts();
-    const orders = JSON.parse(localStorage.getItem("dvgcart_orders")) || [];
+    const orders = ordersList || JSON.parse(localStorage.getItem("dvgcart_orders")) || [];
     
     // Revenue
-    const revenue = orders.reduce((sum, o) => sum + o.total, 0);
+    const revenue = orders.reduce((sum, o) => sum + (Number(o.total) || 0), 0);
     statRevenue.textContent = revenue.toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
     
     // Orders count
@@ -292,7 +292,7 @@ document.addEventListener("DOMContentLoaded", () => {
     statProducts.textContent = `${products.length} Items`;
 
     // VIP Clientele
-    const uniqueClients = [...new Set(orders.map(o => o.clientName.trim()))];
+    const uniqueClients = [...new Set(orders.map(o => (o.clientName || '').trim()).filter(Boolean))];
     statClients.textContent = `${uniqueClients.length} Clients`;
   }
 
@@ -316,13 +316,13 @@ document.addEventListener("DOMContentLoaded", () => {
     setWaInput.value = localStorage.getItem("dvgcart_link_wa") || "";
 
     // Hero Banner Settings
-    if (setHeroTagInput) setHeroTagInput.value = localStorage.getItem("dvgcart_hero_tag") || "Limited Edition Release";
-    if (setHeroTitleInput) setHeroTitleInput.value = localStorage.getItem("dvgcart_hero_title") || "The Art of Premium Apparel";
-    if (setHeroDescInput) setHeroDescInput.value = localStorage.getItem("dvgcart_hero_desc") || "Elevate your daily aesthetic. Explore our meticulously tailored organic cotton tees, high-fidelity audio equipment, and custom designer accents.";
+    if (setHeroTagInput) setHeroTagInput.value = localStorage.getItem("dvgcart_hero_tag") || "Our luxury brand stands for quality, styling, sophistication";
+    if (setHeroTitleInput) setHeroTitleInput.value = localStorage.getItem("dvgcart_hero_title") || "GOLD & ELEGANCE";
+    if (setHeroDescInput) setHeroDescInput.value = localStorage.getItem("dvgcart_hero_desc") || "Our luxury brand stands for quality, styling, luxury brand, sophistication and pre-eminent execution.";
     if (setHeroPriceTitleInput) setHeroPriceTitleInput.value = localStorage.getItem("dvgcart_hero_price_title") || "Signature Pima Tee";
     if (setHeroPriceAmountInput) setHeroPriceAmountInput.value = localStorage.getItem("dvgcart_hero_price_amount") || "₹9,999";
     
-    const heroImg = localStorage.getItem("dvgcart_hero_image") || "images/tshirt.png";
+    const heroImg = localStorage.getItem("dvgcart_hero_image") || "images/hero_model.jpg";
     if (setHeroImageInput) setHeroImageInput.value = heroImg;
     if (heroImagePreviewBox) {
       if (heroImg) {
@@ -332,6 +332,16 @@ document.addEventListener("DOMContentLoaded", () => {
         heroImagePreviewBox.style.backgroundImage = "";
         heroImagePreviewBox.classList.remove("active");
       }
+    }
+
+    // Announcement Bar Settings
+    const setAnnouncementShipping = document.getElementById("set-announcement-shipping");
+    const setAnnouncementPromo = document.getElementById("set-announcement-promo");
+    if (setAnnouncementShipping) {
+      setAnnouncementShipping.value = localStorage.getItem("dvgcart_announcement_shipping") || "COMPLIMENTARY INSURED EXPRESS SHIPPING ON ORDERS OVER ₹15,000";
+    }
+    if (setAnnouncementPromo) {
+      setAnnouncementPromo.value = localStorage.getItem("dvgcart_announcement_promo") || "USE CODE VIP10 FOR 10% OFF";
     }
     
     // Custom Logo preview
@@ -369,7 +379,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (products.length === 0) {
       productsTableBody.innerHTML = `
         <tr>
-          <td colspan="5" style="text-align: center; color: var(--color-text-muted); padding: 40px;">
+          <td colspan="6" style="text-align: center; color: var(--color-text-muted); padding: 40px;">
             No items present in the collection. Click 'Add Creation' to seed the catalog.
           </td>
         </tr>
@@ -379,10 +389,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     products.forEach(p => {
       const tr = document.createElement("tr");
-      const priceFormatted = p.price.toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
+      const priceFormatted = Number(p.price).toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
       const statusHTML = p.featured 
         ? `<span class="badge-category" style="background-color: rgba(212, 175, 55, 0.15); font-weight: 500;">Featured Banner</span>` 
         : `<span style="color: var(--color-text-muted); font-size: 12px;">Standard Listing</span>`;
+
+      const stock = p.stockLeft !== undefined ? Number(p.stockLeft) : (p.quantity !== undefined ? Number(p.quantity) : 10);
+      let stockHTML = "";
+      if (stock === 0) {
+        stockHTML = `<span class="badge-stock-danger">🔴 OUT OF STOCK</span>`;
+      } else if (stock <= 5) {
+        stockHTML = `<span class="badge-stock-danger">⚠️ LOW: ${stock} Left</span>`;
+      } else {
+        stockHTML = `<span class="badge-stock-success">● ${stock} In Stock</span>`;
+      }
 
       tr.innerHTML = `
         <td data-label="Product">
@@ -396,6 +416,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </td>
         <td data-label="Category"><span class="badge-category">${p.category}</span></td>
         <td data-label="Price"><strong style="color: var(--color-accent);">${priceFormatted}</strong></td>
+        <td data-label="Stock / Qty">${stockHTML}</td>
         <td data-label="Status">${statusHTML}</td>
         <td data-label="Actions">
           <button class="btn-icon-action edit-product-btn" data-id="${p.id}" title="Edit product">Edit</button>
@@ -557,6 +578,12 @@ document.addEventListener("DOMContentLoaded", () => {
       prodTitle.value = product.title;
       prodCategory.value = product.category;
       prodPrice.value = product.price;
+
+      const prodStockInput = document.getElementById("prod-stock");
+      if (prodStockInput) {
+        prodStockInput.value = product.stockLeft !== undefined ? product.stockLeft : (product.quantity !== undefined ? product.quantity : 10);
+      }
+
       prodDesc.value = product.description;
       prodSpecs.value = product.specs ? product.specs.join("\n") : "";
       prodFeatured.checked = product.featured || false;
@@ -570,6 +597,8 @@ document.addEventListener("DOMContentLoaded", () => {
       // Add Mode
       productModalTitle.textContent = "Add New Creation";
       prodFormId.value = "";
+      const prodStockInput = document.getElementById("prod-stock");
+      if (prodStockInput) prodStockInput.value = 10;
       prodSubmitBtn.textContent = "Create Product";
     }
 
@@ -596,6 +625,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const title = prodTitle.value;
     const category = prodCategory.value;
     const price = parseFloat(prodPrice.value);
+    const prodStockInput = document.getElementById("prod-stock");
+    const stockLeft = prodStockInput && !isNaN(parseInt(prodStockInput.value)) ? parseInt(prodStockInput.value) : 10;
     const description = prodDesc.value;
     const featured = prodFeatured.checked;
     
@@ -635,6 +666,7 @@ document.addEventListener("DOMContentLoaded", () => {
           title,
           category,
           price,
+          stockLeft,
           description,
           image: primaryImage,
           images: imagesArray.length > 0 ? imagesArray : [primaryImage],
@@ -650,6 +682,7 @@ document.addEventListener("DOMContentLoaded", () => {
         title,
         category,
         price,
+        stockLeft,
         description,
         image: primaryImage,
         images: imagesArray.length > 0 ? imagesArray : [primaryImage],
@@ -739,7 +772,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!heroImgSrc && setHeroImageInput) {
         heroImgSrc = setHeroImageInput.value.trim();
       }
-      if (!heroImgSrc) heroImgSrc = "images/tshirt.png";
+      if (!heroImgSrc) heroImgSrc = "images/hero_model.jpg";
 
       // Upload base64 hero image to Supabase Storage
       if (heroImgSrc.startsWith("data:")) {
@@ -747,9 +780,9 @@ document.addEventListener("DOMContentLoaded", () => {
         heroImgSrc = await uploadImageToStorage(heroImgSrc, "hero");
       }
 
-      const heroTag = setHeroTagInput ? (setHeroTagInput.value.trim() || "Limited Edition Release") : "Limited Edition Release";
-      const heroTitle = setHeroTitleInput ? (setHeroTitleInput.value.trim() || "The Art of Premium Apparel") : "The Art of Premium Apparel";
-      const heroDesc = setHeroDescInput ? (setHeroDescInput.value.trim() || "Elevate your daily aesthetic...") : "Elevate your daily aesthetic...";
+      const heroTag = setHeroTagInput ? (setHeroTagInput.value.trim() || "Our luxury brand stands for quality, styling, sophistication") : "Our luxury brand stands for quality, styling, sophistication";
+      const heroTitle = setHeroTitleInput ? (setHeroTitleInput.value.trim() || "GOLD & ELEGANCE") : "GOLD & ELEGANCE";
+      const heroDesc = setHeroDescInput ? (setHeroDescInput.value.trim() || "Our luxury brand stands for quality, styling, luxury brand, sophistication and pre-eminent execution.") : "Our luxury brand stands for quality, styling, luxury brand, sophistication and pre-eminent execution.";
       const heroPriceTitle = setHeroPriceTitleInput ? (setHeroPriceTitleInput.value.trim() || "Signature Pima Tee") : "Signature Pima Tee";
       const heroPriceAmount = setHeroPriceAmountInput ? (setHeroPriceAmountInput.value.trim() || "₹9,999") : "₹9,999";
 
@@ -771,6 +804,29 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       showToast("Hero Banner updated & synced to all devices.");
+    });
+  }
+
+  // Handle Announcement & Promo Bar Form
+  const settingsAnnouncementForm = document.getElementById("settings-announcement-form");
+  const setAnnouncementShippingInput = document.getElementById("set-announcement-shipping");
+  const setAnnouncementPromoInput = document.getElementById("set-announcement-promo");
+
+  if (settingsAnnouncementForm) {
+    settingsAnnouncementForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const shippingText = setAnnouncementShippingInput ? (setAnnouncementShippingInput.value.trim() || "COMPLIMENTARY INSURED EXPRESS SHIPPING ON ORDERS OVER ₹15,000") : "COMPLIMENTARY INSURED EXPRESS SHIPPING ON ORDERS OVER ₹15,000";
+      const promoText = setAnnouncementPromoInput ? (setAnnouncementPromoInput.value.trim() || "USE CODE VIP10 FOR 10% OFF") : "USE CODE VIP10 FOR 10% OFF";
+
+      localStorage.setItem("dvgcart_announcement_shipping", shippingText);
+      localStorage.setItem("dvgcart_announcement_promo", promoText);
+
+      showToast("Updating Top Announcement Bar in database...", false);
+      await saveCloudSettingsBatch({
+        announcement_shipping: shippingText,
+        announcement_promo: promoText
+      });
+      showToast("Top announcement banner synced & live on storefront!");
     });
   }
 
@@ -1058,17 +1114,47 @@ document.addEventListener("DOMContentLoaded", () => {
     reader.readAsText(file);
   });
 
-  // 7. CONCIERGE TRANSMISSION LOGS (SIMULATED ORDERS)
-  function renderOrdersLog() {
-    const orders = JSON.parse(localStorage.getItem("dvgcart_orders")) || [];
+  // 7. CONCIERGE TRANSMISSION LOGS (REAL DATABASE + OFFLINE CACHE)
+  async function renderOrdersLog() {
+    let orders = [];
+
+    // 1. Fetch real client orders from Supabase database
+    if (typeof fetchCloudOrders === "function") {
+      const cloudOrders = await fetchCloudOrders();
+      if (cloudOrders && cloudOrders.length > 0) {
+        orders = cloudOrders.map(o => ({
+          orderId: o.order_id || ("ORD-" + (o.id || Date.now())),
+          clientName: o.client_name || "Valued Client",
+          clientPhone: o.client_phone || "N/A",
+          clientAddress: o.client_address || "",
+          city: o.city || "",
+          pincode: o.pincode || "",
+          paymentMethod: o.payment_method || "WhatsApp Concierge",
+          notes: o.notes || "",
+          items: typeof o.items === "string" ? JSON.parse(o.items) : (o.items || []),
+          subtotal: Number(o.subtotal) || Number(o.total) || 0,
+          discount: Number(o.discount) || 0,
+          total: Number(o.total) || 0,
+          date: o.created_at ? new Date(o.created_at).toLocaleDateString() : new Date().toLocaleDateString(),
+          status: o.status || "Transmitted"
+        }));
+        localStorage.setItem("dvgcart_orders", JSON.stringify(orders));
+      } else {
+        orders = JSON.parse(localStorage.getItem("dvgcart_orders")) || [];
+      }
+    } else {
+      orders = JSON.parse(localStorage.getItem("dvgcart_orders")) || [];
+    }
+
     ordersLogContainer.innerHTML = "";
 
     if (orders.length === 0) {
       ordersLogContainer.innerHTML = `
         <div style="text-align: center; color: var(--color-text-muted); padding: 40px; font-weight: 300; font-size: 13px;">
-          No order transmissions logged. Complete client checkout in storefront to simulate orders.
+          No order transmissions logged. Complete client checkout in storefront or WhatsApp to view live orders here.
         </div>
       `;
+      updateStats(orders);
       return;
     }
 
@@ -1077,38 +1163,46 @@ document.addEventListener("DOMContentLoaded", () => {
       orderCard.className = "cart-item";
       orderCard.style.gridTemplateColumns = "1fr auto";
       orderCard.style.padding = "20px";
-      orderCard.style.backgroundColor = "rgba(255, 255, 255, 0.01)";
-      orderCard.style.border = "1px solid rgba(255, 255, 255, 0.03)";
+      orderCard.style.backgroundColor = "rgba(255, 255, 255, 0.02)";
+      orderCard.style.border = "1px solid rgba(212, 175, 55, 0.25)";
+      orderCard.style.borderRadius = "3px";
       orderCard.style.marginBottom = "15px";
 
-      const itemsListHTML = order.items.map(item => 
-        `<div style="font-size: 12px; color: var(--color-text-muted); margin-top: 3px;">• ${item.quantity}x ${item.title}</div>`
+      const itemsListHTML = (order.items || []).map(item => 
+        `<div style="font-size: 12px; color: #d1d5db; margin-top: 3px;">• <strong>${item.quantity || 1}x</strong> ${item.title} <span style="color: var(--color-accent);">${Number(item.price * (item.quantity || 1)).toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 })}</span></div>`
       ).join("");
+
+      const addressLine = order.clientAddress 
+        ? `<div style="font-size: 11px; color: var(--color-text-muted); margin-top: 4px;">📍 ${order.clientAddress}${order.city ? ', ' + order.city : ''}${order.pincode ? ' - ' + order.pincode : ''}</div>`
+        : '';
 
       orderCard.innerHTML = `
         <div>
-          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-            <strong class="serif" style="font-size: 16px; color: var(--color-text-light);">${order.clientName}</strong>
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+            <strong class="serif" style="font-size: 16px; color: #fff;">${order.clientName}</strong>
             <span class="badge-category" style="font-size: 9px; padding: 2px 6px;">${order.orderId}</span>
           </div>
-          <div style="font-size: 12px; color: var(--color-text-muted);">Phone: ${order.clientPhone}</div>
-          <div style="font-size: 12px; color: var(--color-text-muted); margin-bottom: 8px;">Date: ${order.date}</div>
-          <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255, 255, 255, 0.05);">
+          <div style="font-size: 12px; color: #d4af37;">📞 ${order.clientPhone}</div>
+          ${addressLine}
+          <div style="font-size: 11px; color: var(--color-text-muted); margin-top: 4px;">Date: ${order.date} • Method: ${order.paymentMethod || 'WhatsApp Concierge'}</div>
+          <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255, 255, 255, 0.08);">
             ${itemsListHTML}
           </div>
         </div>
         <div style="text-align: right; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
-          <strong style="color: var(--color-accent); font-family: var(--font-serif); font-size: 18px;">₹${order.total.toLocaleString('en-IN')}</strong>
-          <span class="badge-category" style="background-color: rgba(46, 125, 50, 0.15); color: #81c784; font-size: 9px; font-weight: 500; border-radius: 2px; width: fit-content; align-self: flex-end; margin-top: 20px;">Transmitted</span>
+          <strong style="color: var(--color-accent); font-family: var(--font-serif); font-size: 18px;">₹${Number(order.total).toLocaleString('en-IN')}</strong>
+          <span class="badge-category" style="background-color: rgba(46, 125, 50, 0.2); color: #81c784; font-size: 9px; font-weight: 600; border-radius: 2px; width: fit-content; align-self: flex-end; margin-top: 15px; border: 1px solid rgba(74, 222, 128, 0.3);">TRANSMITTED</span>
         </div>
       `;
 
       ordersLogContainer.appendChild(orderCard);
     });
+
+    updateStats(orders);
   }
 
   clearOrdersBtn.addEventListener("click", () => {
-    if (confirm("Are you sure you want to clear all order logs? This will reset your dashboard revenue statistics.")) {
+    if (confirm("Are you sure you want to clear local order logs? This will reset your dashboard revenue statistics.")) {
       localStorage.setItem("dvgcart_orders", JSON.stringify([]));
       renderOrdersLog();
       updateStats();
